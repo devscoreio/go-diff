@@ -1250,6 +1250,26 @@ func (dmp *DiffMatchPatch) DiffLevenshtein(diffs []Diff) int {
 	return levenshtein
 }
 
+// DiffLevenshtein computes the Levenshtein distance that is the number of inserted, deleted or substituted characters.
+func (dmp *DiffMatchPatch) DiffAdditionsDeletions(diffs []Diff) (int, int) {
+	insertions := 0
+	deletions := 0
+
+	for _, aDiff := range diffs {
+		switch aDiff.Type {
+		case DiffInsert:
+			insertions += len(aDiff.Text)
+		case DiffDelete:
+			deletions += len(aDiff.Text)
+		case DiffEqual:
+			// Do nothing we don't care
+
+		}
+	}
+
+	return insertions, deletions
+}
+
 // DiffToDelta crushes the diff into an encoded string which describes the operations required to transform text1 into text2.
 // E.g. =3\t-2\t+ing  -> Keep 3 chars, delete 2 chars, insert 'ing'. Operations are tab-separated.  Inserted text is escaped using %xx notation.
 func (dmp *DiffMatchPatch) DiffToDelta(diffs []Diff) string {
